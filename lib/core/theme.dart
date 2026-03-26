@@ -4,12 +4,30 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   AppTheme._();
 
-  static const Color primaryBlue = Color(0xFF005599);
-  static const Color accentGold = Color(0xFFD4AF37);
-  static const Color backgroundWhite = Color(0xFFFDFEFF);
+  // Naming is kept for compatibility with current widgets, but the palette is
+  // tuned to Kamakura Shinsho's bright yellow-green brand direction.
+  static const Color primaryBlue = Color(0xFF8FC31F);
+  static const Color primaryBlueDeep = Color(0xFF5E8E12);
+  static const Color primaryBlueSoft = Color(0xFFF2F8DE);
+  static const Color accentGold = Color(0xFFD6E96A);
+  static const Color accentGoldSoft = Color(0xFFF7FBD9);
+  static const Color backgroundWhite = Color(0xFFFBFDF5);
   static const Color surfaceWhite = Colors.white;
-  static const Color textPrimary = Color(0xFF16324A);
-  static const Color textSecondary = Color(0xFF587085);
+  static const Color borderSoft = Color(0xFFDCE7BF);
+  static const Color textPrimary = Color(0xFF304312);
+  static const Color textSecondary = Color(0xFF6C7E42);
+  static const Color successGreen = Color(0xFF2F7D5C);
+  static const Color warningAmber = Color(0xFFC48A1A);
+
+  static const LinearGradient heroGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFF8FC31F),
+      Color(0xFFB6D94C),
+      Color(0xFFF3F8C9),
+    ],
+  );
 
   static ThemeData get lightTheme {
     final base = ThemeData(
@@ -22,7 +40,10 @@ class AppTheme {
         brightness: Brightness.light,
       ).copyWith(
         tertiary: accentGold,
+        primaryContainer: primaryBlueSoft,
+        secondaryContainer: accentGoldSoft,
         onSurface: textPrimary,
+        outline: borderSoft,
       ),
       scaffoldBackgroundColor: backgroundWhite,
     );
@@ -35,7 +56,7 @@ class AppTheme {
     return base.copyWith(
       textTheme: textTheme,
       appBarTheme: const AppBarTheme(
-        backgroundColor: surfaceWhite,
+        backgroundColor: backgroundWhite,
         foregroundColor: primaryBlue,
         elevation: 0,
         centerTitle: false,
@@ -45,11 +66,11 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: Color(0xFFE3EBF2)),
+          side: const BorderSide(color: borderSoft),
         ),
       ),
       chipTheme: base.chipTheme.copyWith(
-        backgroundColor: const Color(0xFFEAF3FA),
+        backgroundColor: primaryBlueSoft,
         selectedColor: accentGold.withValues(alpha: 0.18),
         labelStyle: textTheme.labelLarge,
         side: BorderSide.none,
@@ -59,11 +80,11 @@ class AppTheme {
         fillColor: surfaceWhite,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFFD6E3EE)),
+          borderSide: const BorderSide(color: borderSoft),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFFD6E3EE)),
+          borderSide: const BorderSide(color: borderSoft),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
@@ -80,6 +101,7 @@ class AppTheme {
           ),
         ),
       ),
+      dividerColor: borderSoft,
     );
   }
 }
