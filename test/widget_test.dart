@@ -14,6 +14,7 @@ void main() {
     expect(find.text('街の運営'), findsAtLeastNWidgets(1));
     expect(find.text('未来'), findsOneWidget);
     expect(find.text('終活'), findsOneWidget);
+    expect(find.text('観光'), findsOneWidget);
     expect(find.text('自治体モックデータ'), findsOneWidget);
     expect(find.text('鎌倉市'), findsAtLeastNWidgets(1));
     expect(find.text('アクション'), findsOneWidget);

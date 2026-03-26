@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rebirth_city/core/theme.dart';
 import 'package:rebirth_city/features/city_management/presentation/city_management_page.dart';
 import 'package:rebirth_city/features/life_planning/presentation/life_planning_page.dart';
+import 'package:rebirth_city/features/social_tourism/presentation/social_tourism_page.dart';
 import 'package:rebirth_city/features/simulation/presentation/simulation_page.dart';
 
 void main() {
@@ -37,12 +38,14 @@ class _ReBirthCityHomePageState extends State<ReBirthCityHomePage> {
     '街の運営',
     '未来予測',
     '終活アクション',
+    '観光・連携',
   ];
 
   static const _pages = [
     CityManagementPage(),
     SimulationPage(),
     LifePlanningPage(),
+    SocialTourismPage(),
   ];
 
   @override
@@ -116,6 +119,15 @@ class _ReBirthCityHomePageState extends State<ReBirthCityHomePage> {
                           setState(() => _currentIndex = 2);
                         },
                       ),
+                      _QuickActionTile(
+                        icon: Icons.travel_explore_rounded,
+                        title: '未来都市を観光する',
+                        subtitle: '他プレイヤーの街と実在サービスを見る',
+                        onTap: () {
+                          Navigator.pop(context);
+                          setState(() => _currentIndex = 3);
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -157,6 +169,11 @@ class _ReBirthCityHomePageState extends State<ReBirthCityHomePage> {
                 icon: Icon(Icons.favorite_border_rounded),
                 selectedIcon: Icon(Icons.favorite),
                 label: '終活',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.explore_outlined),
+                selectedIcon: Icon(Icons.explore),
+                label: '観光',
               ),
             ],
           ),
