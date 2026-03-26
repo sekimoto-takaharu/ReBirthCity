@@ -17,5 +17,6 @@ void main() {
     expect(find.text('自治体モックデータ'), findsOneWidget);
     expect(find.text('鎌倉市'), findsAtLeastNWidgets(1));
     expect(find.text('アクション'), findsOneWidget);
+    expect(find.text('未来幸福度'), findsOneWidget);
   });
 }

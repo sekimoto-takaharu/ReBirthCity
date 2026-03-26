@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rebirth_city/core/theme.dart';
 import 'package:rebirth_city/features/city_management/application/city_management_providers.dart';
+import 'package:rebirth_city/features/simulation/application/simulation_providers.dart';
 
 class CityManagementPage extends ConsumerWidget {
   const CityManagementPage({super.key});
@@ -11,6 +12,7 @@ class CityManagementPage extends ConsumerWidget {
     final city = ref.watch(selectedCityProvider);
     final cities = ref.watch(cityListProvider);
     final selectedCode = ref.watch(selectedCityCodeProvider);
+    final snapshot = ref.watch(simulationSnapshotProvider);
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -115,6 +117,16 @@ class CityManagementPage extends ConsumerWidget {
                       label: '財政健全度',
                       value: city.financialHealth.toStringAsFixed(1),
                     ),
+                    _MetricCard(
+                      width: compactWidth,
+                      label: '未来幸福度',
+                      value: snapshot.projectedHappinessScore.toStringAsFixed(1),
+                    ),
+                    _MetricCard(
+                      width: compactWidth,
+                      label: '未来財政',
+                      value: snapshot.projectedFinancialBalance.toStringAsFixed(1),
+                    ),
                   ],
                 );
               },
@@ -127,13 +139,19 @@ class CityManagementPage extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Phase 1 達成内容',
+                      '街のリアルタイム変化',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 12),
-                    const _PhaseItem(text: 'Flutter プロジェクト初期化と DDD ベースの構成を整備'),
-                    const _PhaseItem(text: '自治体データのモックを実装し、画面から切り替え可能に接続'),
-                    const _PhaseItem(text: '未来予測ロジックの基礎を作り、次フェーズの政策反映に備えた'),
+                    _PhaseItem(
+                      text: '終活コマンド反映後の幸福度: ${snapshot.projectedHappinessScore.toStringAsFixed(1)}',
+                    ),
+                    _PhaseItem(
+                      text: '終活コマンド反映後の財政バランス: ${snapshot.projectedFinancialBalance.toStringAsFixed(1)}',
+                    ),
+                    _PhaseItem(
+                      text: '資産循環スコア: ${snapshot.assetCirculationScore.toStringAsFixed(0)}',
+                    ),
                   ],
                 ),
               ),
