@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rebirth_city/features/city_management/application/city_management_providers.dart';
 import 'package:rebirth_city/features/life_planning/application/life_planning_providers.dart';
+import 'package:rebirth_city/features/life_planning/application/mobile_feature_providers.dart';
 import 'package:rebirth_city/features/life_planning/domain/models/life_action.dart';
 import 'package:rebirth_city/features/simulation/application/simulation_engine.dart';
 import 'package:rebirth_city/features/simulation/domain/models/simulation_effects.dart';
@@ -54,10 +55,24 @@ final simulationTimelineProvider = Provider<List<SimulationSnapshot>>((ref) {
 
 final simulationEffectsProvider = Provider<SimulationEffects>((ref) {
   final selectedActions = ref.watch(selectedLifeActionTypesProvider);
+  final legacyArchiveScore = ref.watch(legacyArchiveScoreProvider);
+  final walking = ref.watch(walkingProgressProvider);
 
-  return selectedActions.fold(SimulationEffects.zero, (current, actionType) {
+  final commandEffects = selectedActions.fold(SimulationEffects.zero, (current, actionType) {
     return current + _effectForAction(actionType);
   });
+
+  final mobileEffects = SimulationEffects(
+    populationDeltaRate: (walking.sessions * 0.00008).clamp(0.0, 0.0006),
+    budgetDeltaRate: (legacyArchiveScore * 0.00002).clamp(0.0, 0.0009),
+    happinessDelta:
+        ((walking.distanceKm * 0.45) + (legacyArchiveScore * 0.08)).clamp(0.0, 8.0),
+    elderlyRatioDeltaRate: (walking.sessions * 0.00003).clamp(0.0, 0.0003),
+    assetCirculationScore:
+        ((legacyArchiveScore * 1.4) + (walking.stepCount / 400)).clamp(0.0, 36.0),
+  );
+
+  return commandEffects + mobileEffects;
 });
 
 SimulationEffects _effectForAction(LifeActionType type) {
