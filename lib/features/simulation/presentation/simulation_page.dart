@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rebirth_city/core/theme.dart';
 import 'package:rebirth_city/features/city_management/application/city_management_providers.dart';
+import 'package:rebirth_city/features/life_planning/application/life_planning_providers.dart';
 import 'package:rebirth_city/features/simulation/application/simulation_providers.dart';
 
 class SimulationPage extends ConsumerWidget {
@@ -14,6 +15,7 @@ class SimulationPage extends ConsumerWidget {
     final selectedYear = ref.watch(simulationYearProvider);
     final snapshot = ref.watch(simulationSnapshotProvider);
     final timeline = ref.watch(simulationTimelineProvider);
+    final selectedActions = ref.watch(selectedLifeActionTypesProvider);
 
     return SafeArea(
       child: ListView(
@@ -41,6 +43,14 @@ class SimulationPage extends ConsumerWidget {
                     '予測年数: ${selectedYear.round()} 年後',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
+                  const SizedBox(height: 12),
+                  _FutureCityVisual(
+                    yearOffset: selectedYear.round(),
+                    happinessScore: snapshot.projectedHappinessScore,
+                    financialBalance: snapshot.projectedFinancialBalance,
+                    activatedActionCount: selectedActions.length,
+                  ),
+                  const SizedBox(height: 16),
                   Slider(
                     value: selectedYear,
                     min: 0,
@@ -79,6 +89,11 @@ class SimulationPage extends ConsumerWidget {
                             width: compactWidth,
                             label: '幸福度',
                             value: snapshot.projectedHappinessScore.toStringAsFixed(1),
+                          ),
+                          _ForecastCard(
+                            width: compactWidth,
+                            label: '財政バランス',
+                            value: snapshot.projectedFinancialBalance.toStringAsFixed(1),
                           ),
                         ],
                       );
@@ -171,7 +186,7 @@ class SimulationPage extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            '基礎ロジックでは人口減少、高齢化、予算縮小を年次係数で試算しています。次フェーズで終活アクションの効果を反映します。',
+            '終活コマンドの選択内容に応じて、幸福度・財政バランス・街の見た目がリアルタイムに変化します。',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: AppTheme.textSecondary,
             ),
@@ -234,6 +249,111 @@ class _ForecastCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _FutureCityVisual extends StatelessWidget {
+  const _FutureCityVisual({
+    required this.yearOffset,
+    required this.happinessScore,
+    required this.financialBalance,
+    required this.activatedActionCount,
+  });
+
+  final int yearOffset;
+  final double happinessScore;
+  final double financialBalance;
+  final int activatedActionCount;
+
+  @override
+  Widget build(BuildContext context) {
+    final vitality = ((happinessScore + financialBalance) / 200).clamp(0.0, 1.0);
+    final skylineHeight = 76 + (vitality * 44);
+    final treeScale = 0.7 + (activatedActionCount * 0.08);
+    final skyColor = Color.lerp(
+      const Color(0xFFE8E3B6),
+      const Color(0xFFCFEA8B),
+      vitality,
+    )!;
+
+    return Container(
+      height: 170,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            skyColor,
+            Colors.white,
+          ],
+        ),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: 0,
+            right: 0,
+            child: Chip(
+              label: Text('$yearOffset年後'),
+              backgroundColor: Colors.white.withValues(alpha: 0.72),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _BuildingBar(height: skylineHeight * 0.74),
+                _BuildingBar(height: skylineHeight),
+                _TreeIcon(scale: treeScale),
+                _BuildingBar(height: skylineHeight * 0.88),
+                _TreeIcon(scale: treeScale * 0.9),
+                _BuildingBar(height: skylineHeight * 0.64),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BuildingBar extends StatelessWidget {
+  const _BuildingBar({required this.height});
+
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 22,
+      height: height,
+      decoration: BoxDecoration(
+        color: AppTheme.primaryBlueDeep.withValues(alpha: 0.82),
+        borderRadius: BorderRadius.circular(8),
+      ),
+    );
+  }
+}
+
+class _TreeIcon extends StatelessWidget {
+  const _TreeIcon({required this.scale});
+
+  final double scale;
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.scale(
+      scale: scale,
+      child: const Icon(
+        Icons.park_rounded,
+        size: 38,
+        color: AppTheme.successGreen,
       ),
     );
   }

@@ -5,6 +5,8 @@ class SimulationSnapshot {
     required this.elderlyRatio,
     required this.projectedBudgetOkuYen,
     required this.projectedHappinessScore,
+    required this.projectedFinancialBalance,
+    required this.assetCirculationScore,
   });
 
   final int yearOffset;
@@ -12,4 +14,6 @@ class SimulationSnapshot {
   final double elderlyRatio;
   final double projectedBudgetOkuYen;
   final double projectedHappinessScore;
+  final double projectedFinancialBalance;
+  final double assetCirculationScore;
 }
